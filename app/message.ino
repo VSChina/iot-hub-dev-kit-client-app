@@ -31,26 +31,20 @@ void initSensor()
 
 float readTemperature()
 {
-    sensor->enable();
+    sensor->reset();
 
     float temperature = 0;
     sensor->getTemperature(&temperature);
-
-    sensor->disable();
-    sensor->reset();
 
     return temperature;
 }
 
 float readHumidity()
 {
-    sensor->enable();
+    sensor->reset();
 
     float humidity = 0;
     sensor->getHumidity(&humidity);
-
-    sensor->disable();
-    sensor->reset();
 
     return humidity;
 }

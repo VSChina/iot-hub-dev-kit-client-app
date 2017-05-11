@@ -2,4 +2,4 @@
 #define INTERVAL 2000
 
 // If don't have a physical DHT sensor, can send simulated data to IoT hub
-#define SIMULATED_DATA true
+#define SIMULATED_DATA false
