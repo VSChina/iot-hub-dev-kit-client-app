@@ -1,4 +1,5 @@
 #include "HTS221Sensor.h"
+#include <ArduinoJson.h>
 
 #if SIMULATED_DATA
 
@@ -50,3 +51,23 @@ float readHumidity()
 }
 
 #endif
+
+void parseTwinMessage(char *message)
+{
+    StaticJsonBuffer<MESSAGE_MAX_LEN> jsonBuffer;
+    JsonObject &root = jsonBuffer.parseObject(message);
+    if (!root.success())
+    {
+        LogError("parse %s failed", message);
+        return;
+    }
+
+    if (root["desired"]["interval"].success())
+    {
+        interval = root["desired"]["interval"];
+    }
+    else if (root.containsKey("interval"))
+    {
+        interval = root["interval"];
+    }
+}
