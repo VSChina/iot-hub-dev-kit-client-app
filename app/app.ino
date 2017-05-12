@@ -1,6 +1,5 @@
 #include "AzureIotHub.h"
 #include "AZ3166WiFi.h"
-#include "SystemTime.h"
 #include "config.h"
 
 static int interval = INTERVAL;
@@ -66,6 +65,6 @@ void loop()
     Serial.println(readTemperature());
 
     IoTHubClient_LL_DoWork(iotHubClientHandle);
-    
+
     delay(interval);
 }
