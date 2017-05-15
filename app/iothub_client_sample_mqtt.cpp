@@ -12,37 +12,6 @@ static IOTHUB_CLIENT_LL_HANDLE iotHubClientHandle;
 static bool messagePending = false;
 static bool messageSending = true;
 
-void executeCommand(const char *jsonCommand)
-{
-    StaticJsonBuffer<MESSAGE_MAX_LEN> jsonBuffer;
-    JsonObject& root = jsonBuffer.parseObject(jsonCommand);
-    if (!root.success())
-    {
-        LogInfo("Parse command %s failed", jsonCommand);
-        return;
-    }
-
-    if(!root.containsKey("command") || !root["command"].is<const char *>())
-    {
-        LogInfo("No command string value found in %s", jsonCommand);
-        return;
-    }
-
-    const char * command = root["command"];
-    if(strcmp(command, "blink") == 0)
-    {
-        blinkLED();
-    }
-    else if(strcmp(command, "start") == 0)
-    {
-        messageSending = true;
-    }
-    else if(strcmp(command, "stop") == 0)
-    {
-        messageSending = false;
-    }
-}
-
 static IOTHUBMESSAGE_DISPOSITION_RESULT c2dMessageCallback(IOTHUB_MESSAGE_HANDLE message, void *userContextCallback)
 {
     const char *buffer;
@@ -64,7 +33,7 @@ static IOTHUBMESSAGE_DISPOSITION_RESULT c2dMessageCallback(IOTHUB_MESSAGE_HANDLE
         memcpy(temp, buffer, size);
         temp[size] = '\0';
         LogInfo("Receive C2D message: %s", temp);
-        executeCommand(temp);
+        blinkLED();
         free(temp);
         return IOTHUBMESSAGE_ACCEPTED;
     }
@@ -121,7 +90,7 @@ static void sendConfirmationCallback(IOTHUB_CLIENT_CONFIRMATION_RESULT result, v
     if (IOTHUB_CLIENT_CONFIRMATION_OK == result)
     {
         LogInfo("Message sent to Azure IoT Hub");
-        blinkReceived();
+        blinkSendConfirmation();
     }
     else
     {

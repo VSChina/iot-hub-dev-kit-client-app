@@ -25,7 +25,7 @@ void blinkLED()
     rgbLed.turnOff();
 }
 
-void blinkReceived()
+void blinkSendConfirmation()
 {
     rgbLed.turnOff();
     rgbLed.setColor(0, 0, RGB_LED_BRIGHTNESS);
