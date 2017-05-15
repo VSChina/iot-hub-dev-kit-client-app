@@ -1,9 +1,9 @@
 // Interval time(ms) for sending message to IoT Hub
-#define INTERVAL 2000
+#define INTERVAL 3000
 
 // If don't have a physical DHT sensor, can send simulated data to IoT hub
 #define SIMULATED_DATA false
 
 #define MESSAGE_MAX_LEN 256
 
-#define CONNECTION_STRING ""
+#define DEVICE_CONNECTION_STRING ""
