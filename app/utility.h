@@ -8,6 +8,7 @@ void parseTwinMessage(const char *);
 void readMessage(int, char *);
 void sensorInit(void);
 void blinkLED(void);
+void blinkReceived(void);
 int getInterval(void);
 
 #endif /* UTILITY_H */

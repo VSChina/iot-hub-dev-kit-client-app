@@ -6,18 +6,38 @@
 #include "config.h"
 #include "utility.h"
 #include "iothub_client_sample_mqtt.h"
+#include <ArduinoJson.h>
 
 static IOTHUB_CLIENT_LL_HANDLE iotHubClientHandle;
 static bool messagePending = false;
 static bool messageSending = true;
 
-void executeCommand(const char *command)
+void executeCommand(const char *jsonCommand)
 {
-    if (strstr(command, "blink") != NULL)
+    StaticJsonBuffer<MESSAGE_MAX_LEN> jsonBuffer;
+    JsonObject& root = jsonBuffer.parseObject(jsonCommand);
+    if (!root.success())
+    {
+        LogInfo("Parse command %s failed", jsonCommand);
+        return;
+    }
+
+    if(!root.containsKey("command") || !root["command"].is<const char *>())
+    {
+        LogInfo("No command string value found in %s", jsonCommand);
+        return;
+    }
+
+    const char * command = root["command"];
+    if(strcmp(command, "blink") == 0)
     {
         blinkLED();
     }
-    else if (strstr(command, "stop") != NULL)
+    else if(strcmp(command, "start") == 0)
+    {
+        messageSending = true;
+    }
+    else if(strcmp(command, "stop") == 0)
     {
         messageSending = false;
     }
@@ -43,7 +63,7 @@ static IOTHUBMESSAGE_DISPOSITION_RESULT c2dMessageCallback(IOTHUB_MESSAGE_HANDLE
         }
         memcpy(temp, buffer, size);
         temp[size] = '\0';
-        LogInfo("Receive message: %s", temp);
+        LogInfo("Receive C2D message: %s", temp);
         executeCommand(temp);
         free(temp);
         return IOTHUBMESSAGE_ACCEPTED;
@@ -92,8 +112,7 @@ void iothubInit()
     if (IoTHubClient_LL_SetDeviceTwinCallback(iotHubClientHandle, twinCallback, NULL) != IOTHUB_CLIENT_OK)
     {
         LogInfo("Failed on IoTHubClient_LL_SetDeviceTwinCallback");
-        while (1)
-            ;
+        return;
     }
 }
 
@@ -102,6 +121,7 @@ static void sendConfirmationCallback(IOTHUB_CLIENT_CONFIRMATION_RESULT result, v
     if (IOTHUB_CLIENT_CONFIRMATION_OK == result)
     {
         LogInfo("Message sent to Azure IoT Hub");
+        blinkReceived();
     }
     else
     {
@@ -128,8 +148,9 @@ void iothubSendMessage(const unsigned char *text)
             return;
         }
         LogInfo("IoTHubClient accepted the message for delivery");
-        IoTHubMessage_Destroy(messageHandle);
         messagePending = true;
+        IoTHubMessage_Destroy(messageHandle);
+        delay(getInterval());
     }
 }
 

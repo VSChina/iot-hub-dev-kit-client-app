@@ -46,5 +46,5 @@ void loop()
     iothubSendMessage((const unsigned char *)messagePayload);
     messageCount++;
     iothubLoop();
-    delay(getInterval());
+    delay(10);
 }

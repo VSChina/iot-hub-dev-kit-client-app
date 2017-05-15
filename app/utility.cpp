@@ -21,7 +21,15 @@ void blinkLED()
 {
     rgbLed.turnOff();
     rgbLed.setColor(RGB_LED_BRIGHTNESS, 0, 0);
-    delay(1000);
+    delay(500);
+    rgbLed.turnOff();
+}
+
+void blinkReceived()
+{
+    rgbLed.turnOff();
+    rgbLed.setColor(0, 0, RGB_LED_BRIGHTNESS);
+    delay(500);
     rgbLed.turnOff();
 }
 
