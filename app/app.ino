@@ -1,16 +1,21 @@
 #include "AzureIotHub.h"
 #include "AZ3166WiFi.h"
 #include "config.h"
+#include "utility.h"
+#include "iothub_client_sample_mqtt.h"
 
-static int interval = INTERVAL;
-static IOTHUB_CLIENT_LL_HANDLE iotHubClientHandle;
+static bool hasWifi = false;
+static int messageCount = 1;
 
 void initWifi()
 {
+     Screen.print("Azure IoT DevKit\r\n \r\nConnecting...\r\n");
+
     if (WiFi.begin() == WL_CONNECTED)
     {
         IPAddress ip = WiFi.localIP();
         Screen.print(1, ip.get_address());
+        hasWifi = true;
         Screen.print(2, "Running... \r\n");
     }
     else
@@ -19,52 +24,27 @@ void initWifi()
     }
 }
 
-void initIoThub() 
-{
-    if (platform_init() != 0)
-    {
-        LogInfo("Failed to initialize the platform.");
-        while (1);
-    }
-
-    iotHubClientHandle = IoTHubClient_LL_CreateFromConnectionString(CONNECTION_STRING, MQTT_Protocol);
-    if (iotHubClientHandle == NULL)
-    {
-        LogInfo("Failed on IoTHubClient_CreateFromConnectionString");
-        while (1);
-    }
-
-    if (IoTHubClient_LL_SetOption(iotHubClientHandle, "TrustedCerts", certificates) != IOTHUB_CLIENT_OK)
-    {
-        LogInfo("Failed to set option \"TrustedCerts\"");
-        while (1);
-    }
-
-    if (IoTHubClient_LL_SetDeviceTwinCallback(iotHubClientHandle, twinCallback, NULL) != IOTHUB_CLIENT_OK)
-    {
-        LogInfo("Failed on IoTHubClient_LL_SetDeviceTwinCallback");
-        while (1);
-    }
-}
-
 void setup()
 {
-    Serial.begin(9600);
-
+    hasWifi = false;
     initWifi();
-    initSensor();
-    initIoThub();
+    if (!hasWifi)
+    {
+        LogInfo("Please make sure the wifi connected!");
+        return;
+    }
+
+    Serial.begin(9600);
+    sensorInit();
+    iothubInit();
 }
 
 void loop()
 {
-    Serial.print("Humidity: ");
-    Serial.println(readHumidity());
-
-    Serial.print("Temperature: ");
-    Serial.println(readTemperature());
-
-    IoTHubClient_LL_DoWork(iotHubClientHandle);
-
-    delay(interval);
+    char messagePayload[MESSAGE_MAX_LEN];
+    readMessage(messageCount, messagePayload);
+    iothubSendMessage((const unsigned char *)messagePayload);
+    messageCount++;
+    iothubLoop();
+    delay(10);
 }
