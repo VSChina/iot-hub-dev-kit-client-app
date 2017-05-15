@@ -5,10 +5,9 @@
 #define UTILITY_H
 
 void parseTwinMessage(const char *);
-float readHumidity(void);
-float readTemperature(void);
+void readMessage(int, char *);
 void sensorInit(void);
-void printScreen(void);
 void blinkLED(void);
 int getInterval(void);
+
 #endif /* UTILITY_H */

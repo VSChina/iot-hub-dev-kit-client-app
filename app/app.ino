@@ -4,8 +4,8 @@
 #include "utility.h"
 #include "iothub_client_sample_mqtt.h"
 
-static const char iot_message[] = "{\"topic\":\"iot\"}";
 static bool hasWifi = false;
+static int messageCount = 1;
 
 void initWifi()
 {
@@ -30,7 +30,7 @@ void setup()
     initWifi();
     if (!hasWifi)
     {
-        Serial.println("Please make sure the wifi connected!");
+        LogInfo("Please make sure the wifi connected!");
         return;
     }
 
@@ -41,13 +41,10 @@ void setup()
 
 void loop()
 {
-    Serial.print("Humidity: ");
-    Serial.println(readHumidity());
-
-    Serial.print("Temperature: ");
-    Serial.println(readTemperature());
-
-    iothubSendMessage((const unsigned char *)iot_message);
+    char messagePayload[MESSAGE_MAX_LEN];
+    readMessage(messageCount, messagePayload);
+    iothubSendMessage((const unsigned char *)messagePayload);
+    messageCount++;
     iothubLoop();
     delay(getInterval());
 }

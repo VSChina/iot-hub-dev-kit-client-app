@@ -1,9 +1,9 @@
 #include "HTS221Sensor.h"
+#include "AzureIotHub.h"
 #include "Arduino.h"
 #include <ArduinoJson.h>
 #include "config.h"
 #include "RGB_LED.h"
-#include "OLEDDisplay.h"
 
 #define RGB_LED_BRIGHTNESS 32
 
@@ -25,22 +25,13 @@ void blinkLED()
     rgbLed.turnOff();
 }
 
-void printScreen()
-{
-    Screen.clean();
-    Screen.print(1, "Executing print...");
-    delay(2000);
-    Screen.print(1, "Running... \r\n");
-}
-
 void parseTwinMessage(const char *message)
 {
     StaticJsonBuffer<MESSAGE_MAX_LEN> jsonBuffer;
     JsonObject &root = jsonBuffer.parseObject(message);
     if (!root.success())
     {
-        Serial.print("parse failed: ");
-        Serial.println(message);
+        LogError("parse %s failed", message);
         return;
     }
 
@@ -101,3 +92,32 @@ float readHumidity()
 }
 
 #endif
+
+void readMessage(int messageId, char *payload)
+{
+    float temperature = readTemperature();
+    float humidity = readHumidity();
+    StaticJsonBuffer<MESSAGE_MAX_LEN> jsonBuffer;
+    JsonObject& root = jsonBuffer.createObject();
+    root["deviceId"] = DEVICE_ID;
+    root["messageId"] = messageId;
+
+    if(temperature != temperature)
+    {
+        root["temperature"] = NULL;
+    }
+    else
+    {
+        root["temperature"] = temperature;
+    }
+
+    if(humidity != humidity)
+    {
+        root["humidity"] = NULL;
+    }
+    else
+    {
+        root["humidity"] = humidity;
+    }
+    root.printTo(payload, MESSAGE_MAX_LEN);
+}

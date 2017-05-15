@@ -1,13 +1,12 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-#include "Arduino.h"
 #include "AzureIotHub.h"
+#include "Arduino.h"
 #include "config.h"
 #include "utility.h"
 #include "iothub_client_sample_mqtt.h"
 
-static int receiveContext = 0;
 static IOTHUB_CLIENT_LL_HANDLE iotHubClientHandle;
 static bool messagePending = false;
 static bool messageSending = true;
@@ -17,10 +16,6 @@ void executeCommand(const char *command)
     if (strstr(command, "blink") != NULL)
     {
         blinkLED();
-    }
-    else if (strstr(command, "print") != NULL)
-    {
-        printScreen();
     }
     else if (strstr(command, "stop") != NULL)
     {
@@ -35,7 +30,7 @@ static IOTHUBMESSAGE_DISPOSITION_RESULT c2dMessageCallback(IOTHUB_MESSAGE_HANDLE
 
     if (IoTHubMessage_GetByteArray(message, (const unsigned char **)&buffer, &size) != IOTHUB_MESSAGE_OK)
     {
-        Serial.println("unable to retrieve the message data\r\n");
+        LogInfo("unable to IoTHubMessage_GetByteArray");
         return IOTHUBMESSAGE_REJECTED;
     }
     else
@@ -43,13 +38,12 @@ static IOTHUBMESSAGE_DISPOSITION_RESULT c2dMessageCallback(IOTHUB_MESSAGE_HANDLE
         char *temp = (char *)malloc(size + 1);
         if (temp == NULL)
         {
-            Serial.println("Failed to execute command");
+            LogInfo("Failed to malloc for command");
             return IOTHUBMESSAGE_REJECTED;
         }
         memcpy(temp, buffer, size);
         temp[size] = '\0';
-        Serial.print("Receive message: ");
-        Serial.println(temp);
+        LogInfo("Receive message: %s", temp);
         executeCommand(temp);
         free(temp);
         return IOTHUBMESSAGE_ACCEPTED;
@@ -74,25 +68,25 @@ void iothubInit()
 
     if (platform_init() != 0)
     {
-        Serial.println("Failed to initialize the platform.\r\n");
+        LogInfo("Failed to initialize the platform.");
         return;
     }
 
     if ((iotHubClientHandle = IoTHubClient_LL_CreateFromConnectionString(DEVICE_CONNECTION_STRING, MQTT_Protocol)) == NULL)
     {
-        Serial.println("ERROR: iotHubClientHandle is NULL!\r\n");
+        LogInfo("iotHubClientHandle is NULL!");
         return;
     }
 
     if (IoTHubClient_LL_SetOption(iotHubClientHandle, "TrustedCerts", certificates) != IOTHUB_CLIENT_OK)
     {
-        Serial.println("failure to set option \"TrustedCerts\"\r\n");
+        LogInfo("failure to set option \"TrustedCerts\"");
         return;
     }
 
-    if (IoTHubClient_LL_SetMessageCallback(iotHubClientHandle, c2dMessageCallback, &receiveContext) != IOTHUB_CLIENT_OK)
+    if (IoTHubClient_LL_SetMessageCallback(iotHubClientHandle, c2dMessageCallback, NULL) != IOTHUB_CLIENT_OK)
     {
-        Serial.println("ERROR: IoTHubClient_LL_SetMessageCallback..........FAILED!\r\n");
+        LogInfo("IoTHubClient_LL_SetMessageCallback FAILED!");
         return;
     }
     if (IoTHubClient_LL_SetDeviceTwinCallback(iotHubClientHandle, twinCallback, NULL) != IOTHUB_CLIENT_OK)
@@ -107,11 +101,11 @@ static void sendConfirmationCallback(IOTHUB_CLIENT_CONFIRMATION_RESULT result, v
 {
     if (IOTHUB_CLIENT_CONFIRMATION_OK == result)
     {
-        Serial.println("Confirm of message received from IoT Hub");
+        LogInfo("Message sent to Azure IoT Hub");
     }
     else
     {
-        Serial.println("Failed to send message to Azure IoT Hub");
+        LogInfo("Failed to send message to Azure IoT Hub");
     }
     messagePending = false;
 }
@@ -123,18 +117,17 @@ void iothubSendMessage(const unsigned char *text)
         IOTHUB_MESSAGE_HANDLE messageHandle = IoTHubMessage_CreateFromByteArray(text, strlen((const char *)text));
         if (messageHandle == NULL)
         {
-            Serial.println("ERROR: iotHubMessageHandle is NULL!\r\n");
+            LogInfo("unable to create a new IoTHubMessage");
             return;
         }
 
+        LogInfo("Sending message: %s", text);
         if (IoTHubClient_LL_SendEventAsync(iotHubClientHandle, messageHandle, sendConfirmationCallback, NULL) != IOTHUB_CLIENT_OK)
         {
-            Serial.println("ERROR: IoTHubClient_LL_SendEventAsync......FAILED!\r\n");
+            LogInfo("Failed to hand over the message to IoTHubClient");
             return;
         }
-        Serial.print("message ");
-        Serial.print((const char *)text);
-        Serial.println(" sent to iothub");
+        LogInfo("IoTHubClient accepted the message for delivery");
         IoTHubMessage_Destroy(messageHandle);
         messagePending = true;
     }
