@@ -24,7 +24,8 @@ You also need the following things for your development environment:
 * Mac or PC that is running Windows or Ubuntu.
 * Wireless network for MXChip IoT Developer Kit to connect to.
 * Internet connection to download the configuration tool.
-* [Arduino IDE](https://www.arduino.cc/en/main/software) version 1.6.8 or later. Earlier versions don't work with the AzureIoT library.
+* [Visual Studio Code](https://code.visualstudio.com/)
+* [Arduino Extension](https://marketplace.visualstudio.com/items?itemName=vsciot-vscode.vscode-arduino)
 
 ## Create an IoT hub and register a device for MXChip IoT Developer Kit
 
@@ -143,15 +144,19 @@ The sample application is hosted on GitHub. Clone the sample repository that con
    git clone https://github.com/VSChina/iot-hub-dev-kit-client-app
    ```
 
-[Placeholder]
+Install the package for Feather HUZZAH ESP8266 in the Arduino IDE:
+
+1. Open the folder where the sample application is stored.
+1. Open the app.ino file in the app folder in the Visual Studio Code.
+1. In the Visual Studio Code, press `F1` or `Ctrl + Shift + P` to open command palette, type `Arduino: Boards Manager`.
+1. In `Arduino Boards Manager`, search for `AZ3166`, then click `Install`.
+1. In Status Bar at the bottom, click `<Select Borad Type>`, then select `MXCHIP AZ3166`.
 
 ### Install necessary libraries
 
-[Placeholder]
-
-### Deploy the sample application to MXChip IoT Developer Kit
-
-[Placeholder]
+1. In the Visual Studio Code, press `F1` or `Ctrl + Shift + P` to open command palette, type `Arduino: Libraries Manager`.
+1. Search for the following library names one by one. For each of library that you find, click **Install**.
+   * `ArduinoJson`
 
 ### Config Wifi
 
@@ -159,7 +164,17 @@ The sample application is hosted on GitHub. Clone the sample repository that con
 
 ### Config credentials
 
-[Placeholder]
+1. Open the `config.h` file in the `app` folder.
+1. Locate the following line of code and add the device connection string:
+   ```c
+   define DEVICE_CONNECTION_STRING "YOUR_DEVICE_CONNECTION_STRING"
+   ```
+1. Save the file with `Control-s`.
+
+
+### Deploy the sample application to MXChip IoT Developer Kit
+
+1. In the Visual Studio Code, press `F1` or `Ctrl + Shift + P` to open command palette, type `Arduino: Upload`.
 
 ### Verify the sample application is running successfully
 
