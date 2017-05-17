@@ -144,7 +144,7 @@ The sample application is hosted on GitHub. Clone the sample repository that con
    git clone https://github.com/VSChina/iot-hub-dev-kit-client-app
    ```
 
-Install the package for Feather HUZZAH ESP8266 in the Arduino IDE:
+Install the package for MXChip IoT Developer Kit in the Visual Studio Code:
 
 1. Open the folder where the sample application is stored.
 1. Open the app.ino file in the app folder in the Visual Studio Code.
