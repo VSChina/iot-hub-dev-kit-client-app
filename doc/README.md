@@ -174,7 +174,8 @@ Install the package for MXChip IoT Developer Kit in the Visual Studio Code:
 
 ### Deploy the sample application to MXChip IoT Developer Kit
 
-1. In the Visual Studio Code, press `F1` or `Ctrl + Shift + P` to open command palette, type `Arduino: Upload`.
+1. In the Visual Studio Code, in Status Bar at the bottom, click `<Select Serial Port>`, and then click the serial port for MXChip IoT Developer Kit.
+1. Press `F1` or `Ctrl + Shift + P` to open command palette, type `Arduino: Upload` to build and deploy the sample application to MXChip IoT Developer Kit.
 
 ### Verify the sample application is running successfully
 
