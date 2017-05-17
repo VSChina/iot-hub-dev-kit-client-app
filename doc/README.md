@@ -180,7 +180,7 @@ Install the package for MXChip IoT Developer Kit in the Visual Studio Code:
 
 If you see the following output from the serial monitor window and the blinking LED on MXChip IoT Developer Kit, the sample application is running successfully.
 
-![Final output in Arduino IDE](https://docs.microsoft.com/en-us/azure/iot-hub/media/iot-hub-arduino-huzzah-esp8266-get-started/14_arduino-ide-final-output.png)
+![Final output in VS Code](media/vscode-final-output.png)
 
 ## Next steps
 
