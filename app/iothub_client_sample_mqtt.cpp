@@ -51,6 +51,55 @@ static void twinCallback(DEVICE_TWIN_UPDATE_STATE updateState, const unsigned ch
     free(temp);
 }
 
+void start()
+{
+    LogInfo("Start sending temperature and humidity data");
+    messageSending = true;
+}
+
+void stop()
+{
+    LogInfo("Stop sending temperature and humidity data");
+    messageSending = false;
+}
+
+const char *onSuccess = "\"Successfully invoke device method\"";
+const char *notFound = "\"No method found\"";
+
+int deviceMethodCallback(
+    const char *methodName,
+    const unsigned char *payload,
+    size_t size,
+    unsigned char **response,
+    size_t *response_size,
+    void *userContextCallback)
+{
+    LogInfo("Try to invoke method %s", methodName);
+    const char *responseMessage = onSuccess;
+    int result = 200;
+
+    if (strcmp(methodName, "start") == 0)
+    {
+        start();
+    }
+    else if (strcmp(methodName, "stop") == 0)
+    {
+        stop();
+    }
+    else
+    {
+        LogInfo("No method %s found", methodName);
+        responseMessage = notFound;
+        result = 404;
+    }
+
+    *response_size = strlen(responseMessage);
+    *response = (unsigned char *)malloc(*response_size);
+    strncpy((char *)(*response), responseMessage, *response_size);
+
+    return result;
+}
+
 void iothubInit()
 {
     srand((unsigned int)time(NULL));
@@ -83,6 +132,12 @@ void iothubInit()
         LogInfo("Failed on IoTHubClient_LL_SetDeviceTwinCallback");
         return;
     }
+
+    if(IoTHubClient_LL_SetDeviceMethodCallback(iotHubClientHandle, deviceMethodCallback, NULL) != IOTHUB_CLIENT_OK)
+    {
+        LogInfo("Failed on IoTHubClient_LL_SetDeviceMethodCallback");
+        return;
+    }    
 }
 
 static void sendConfirmationCallback(IOTHUB_CLIENT_CONFIRMATION_RESULT result, void *userContextCallback)
