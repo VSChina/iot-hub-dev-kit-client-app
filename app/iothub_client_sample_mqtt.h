@@ -11,4 +11,5 @@ void iothubSendMessage(const unsigned char *, bool);
 void iothubLoop(void);
 void iothubClose(void);
 
+extern int messageCount;
 #endif /* IOTHUB_CLIENT_SAMPLE_MQTT_H */

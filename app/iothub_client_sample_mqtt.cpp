@@ -66,13 +66,7 @@ void stop()
 const char *onSuccess = "\"Successfully invoke device method\"";
 const char *notFound = "\"No method found\"";
 
-int deviceMethodCallback(
-    const char *methodName,
-    const unsigned char *payload,
-    size_t size,
-    unsigned char **response,
-    size_t *response_size,
-    void *userContextCallback)
+int deviceMethodCallback(const char *methodName, const unsigned char *payload, size_t size, unsigned char **response, size_t *response_size, void *userContextCallback)
 {
     LogInfo("Try to invoke method %s", methodName);
     const char *responseMessage = onSuccess;
@@ -151,6 +145,7 @@ static void sendConfirmationCallback(IOTHUB_CLIENT_CONFIRMATION_RESULT result, v
     {
         LogInfo("Failed to send message to Azure IoT Hub");
     }
+    messageCount++;
     messagePending = false;
 }
 

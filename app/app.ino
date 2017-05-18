@@ -5,7 +5,7 @@
 #include "iothub_client_sample_mqtt.h"
 
 static bool hasWifi = false;
-static int messageCount = 1;
+int messageCount = 1;
 
 void initWifi()
 {
@@ -44,7 +44,6 @@ void loop()
     char messagePayload[MESSAGE_MAX_LEN];
     bool temperatureAlert = readMessage(messageCount, messagePayload);
     iothubSendMessage((const unsigned char *)messagePayload, temperatureAlert);
-    messageCount++;
     iothubLoop();
     delay(10);
 }
