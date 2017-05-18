@@ -5,7 +5,7 @@
 #define UTILITY_H
 
 void parseTwinMessage(const char *);
-void readMessage(int, char *);
+bool readMessage(int, char *);
 void sensorInit(void);
 void blinkLED(void);
 void blinkSendConfirmation(void);

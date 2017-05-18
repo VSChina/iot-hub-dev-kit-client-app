@@ -154,7 +154,7 @@ static void sendConfirmationCallback(IOTHUB_CLIENT_CONFIRMATION_RESULT result, v
     messagePending = false;
 }
 
-void iothubSendMessage(const unsigned char *text)
+void iothubSendMessage(const unsigned char *text, bool temperatureAlert)
 {
     if (messageSending && !messagePending)
     {
@@ -164,7 +164,8 @@ void iothubSendMessage(const unsigned char *text)
             LogInfo("unable to create a new IoTHubMessage");
             return;
         }
-
+        MAP_HANDLE properties = IoTHubMessage_Properties(messageHandle);
+        Map_Add(properties, "temperatureAlert", temperatureAlert ? "true" : "false");
         LogInfo("Sending message: %s", text);
         if (IoTHubClient_LL_SendEventAsync(iotHubClientHandle, messageHandle, sendConfirmationCallback, NULL) != IOTHUB_CLIENT_OK)
         {

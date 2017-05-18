@@ -101,7 +101,7 @@ float readHumidity()
 
 #endif
 
-void readMessage(int messageId, char *payload)
+bool readMessage(int messageId, char *payload)
 {
     float temperature = readTemperature();
     float humidity = readHumidity();
@@ -109,6 +109,7 @@ void readMessage(int messageId, char *payload)
     JsonObject& root = jsonBuffer.createObject();
     root["deviceId"] = DEVICE_ID;
     root["messageId"] = messageId;
+    bool temperatureAlert = false;
 
     if(temperature != temperature)
     {
@@ -117,6 +118,10 @@ void readMessage(int messageId, char *payload)
     else
     {
         root["temperature"] = temperature;
+        if(temperature > TEMPERATURE_ALERT)
+        {
+            temperatureAlert = true;
+        }
     }
 
     if(humidity != humidity)
@@ -128,4 +133,5 @@ void readMessage(int messageId, char *payload)
         root["humidity"] = humidity;
     }
     root.printTo(payload, MESSAGE_MAX_LEN);
+    return temperatureAlert;
 }
