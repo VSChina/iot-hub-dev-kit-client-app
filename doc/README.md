@@ -183,7 +183,6 @@ Once the connection is succeeded, the DevKit will reboot in a few seconds. After
 ![getting-started-wifi-ip](media/getting-started-wifi-ip.jpg)
 
 **Note:** The IP address displays on the web page might not be identical to the actual IP address assigned and displayed on screen. This is normal as the WiFi is using DHCP to dynamically IP assignment.
-{: .notice--info}
 
 ### Config credentials
 
