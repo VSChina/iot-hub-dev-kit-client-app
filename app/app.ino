@@ -42,8 +42,8 @@ void setup()
 void loop()
 {
     char messagePayload[MESSAGE_MAX_LEN];
-    readMessage(messageCount, messagePayload);
-    iothubSendMessage((const unsigned char *)messagePayload);
+    bool temperatureAlert = readMessage(messageCount, messagePayload);
+    iothubSendMessage((const unsigned char *)messagePayload, temperatureAlert);
     messageCount++;
     iothubLoop();
     delay(10);
