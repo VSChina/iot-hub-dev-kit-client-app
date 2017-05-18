@@ -133,7 +133,11 @@ void iothubInit()
         return;
     }
 
-    IoTHubClient_LL_SetDeviceMethodCallback(iotHubClientHandle, deviceMethodCallback, NULL);
+    if(IoTHubClient_LL_SetDeviceMethodCallback(iotHubClientHandle, deviceMethodCallback, NULL) != IOTHUB_CLIENT_OK)
+    {
+        LogInfo("Failed on IoTHubClient_LL_SetDeviceMethodCallback");
+        return;
+    }    
 }
 
 static void sendConfirmationCallback(IOTHUB_CLIENT_CONFIRMATION_RESULT result, void *userContextCallback)
