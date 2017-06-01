@@ -187,11 +187,13 @@ Once the connection is succeeded, the DevKit will reboot in a few seconds. After
 ### Configure device connection string to DevKit (Windows)
 
 1. Download [Putty](http://www.putty.org/)
+
 1. Open Putty, in `Connection type`, select `Serial`, in `Serial line`, enter your Serial Port name, in `Speed`, enter `115200`, then click `Open` button
 
    ![putty-config](media/putty-config.png)
 
 1. Get into configuration mode: Hold down button A, then push and release the reset button.
+
 1. In the prompt of the serial port with `#`, configure your connection string you get from previous step:
   ```bash
   set_az_iothub [your connection string]
@@ -199,8 +201,8 @@ Once the connection is succeeded, the DevKit will reboot in a few seconds. After
   You will see the information once configuration is successful:
   ```bash
   INFO: Set Azure Iot hub connection string successfully.
- ```
-1. Now close the the Putty
+  ```
+  Now close the Putty.
 
 
 ### Deploy the sample application to MXChip IoT Developer Kit
