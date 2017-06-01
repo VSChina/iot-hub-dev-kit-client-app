@@ -16,7 +16,7 @@ Connect MXChip IoT Developer Kit to an IoT hub that you create. Then you run a s
 
 To complete this operation, you need the following parts from your MXChip IoT Developer Kit Starter Kit:
 
-* The MXChip IoT Developer Kit board
+* The MXChip IoT Developer Kit board (firmware version 0.8.2+)
 * A Micro USB to Type A USB cable
 
 You also need the following things for your development environment:
