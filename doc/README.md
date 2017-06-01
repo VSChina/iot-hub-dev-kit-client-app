@@ -162,17 +162,17 @@ Install the package for MXChip IoT Developer Kit in the Visual Studio Code:
 
 Most IoT projects are relying on Internet connectivity. Use AP (Access Point) Mode on DevKit to configure WiFi.
 
-### A. Enter AP Mode
+#### A. Enter AP Mode
 
 Hold down button B, click Reset button, then release button B. The screen will display SSID of the DevKit as well as the configuration portal IP address:
 
 ![getting-started-wifi-ap](media/getting-started-wifi-ap.jpg)
 
-### B. Connect to DevKit AP
+#### B. Connect to DevKit AP
 
 Use your computer or mobile phone to connect to DevKit AP (highlighted in the screenshot above), leave the password as empty.
 
-### C. Configure WiFi for DevKit
+#### C. Configure WiFi for DevKit
 
 Open IP address on the screen in browser, select WiFi you want your DevKit connect to, then type the password. Click **'Connect'** to configure and connect to WiFi.
 
@@ -184,14 +184,23 @@ Once the connection is succeeded, the DevKit will reboot in a few seconds. After
 
 **Note:** The IP address displays on the web page might not be identical to the actual IP address assigned and displayed on screen. This is normal as the WiFi is using DHCP to dynamically IP assignment.
 
-### Config credentials
+### Configure device connection string to DevKit (Windows)
 
-1. Open the `config.h` file in the `app` folder.
-1. Locate the following line of code and add the device connection string:
-   ```c
-   define DEVICE_CONNECTION_STRING "YOUR_DEVICE_CONNECTION_STRING"
-   ```
-1. Save the file with `Control-s`.
+1. Download [Putty](http://www.putty.org/)
+1. Open Putty, in `Connection type`, select `Serial`, in `Serial line`, enter your Serial Port name, in `Speed`, enter `115200`, then click `Open` button
+
+   ![putty-config](media/putty-config.png)
+
+1. Get into configuration mode: Hold down button A, then push and release the reset button.
+1. In the prompt of the serial port with `#`, configure your connection string you get from previous step:
+  ```bash
+  set_az_iothub [your connection string]
+  ```
+  You will see the information once configuration is successful:
+  ```bash
+  INFO: Set Azure Iot hub connection string successfully.
+ ```
+1. Now close the the Putty
 
 
 ### Deploy the sample application to MXChip IoT Developer Kit
